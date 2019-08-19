@@ -15,7 +15,7 @@ namespace Ploeh.Samples.BookingApi
                 context.ActionDescriptor.ControllerTypeInfo.AsType();
 
             if (controllerType == typeof(ReservationsController))
-                return new ReservationsController(new Validator());
+                return new ReservationsController(new Validator(), null, null);
 
             throw new InvalidOperationException(
                 $"Unknown controller type: {controllerType}.");
