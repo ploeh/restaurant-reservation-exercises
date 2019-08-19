@@ -51,7 +51,7 @@ namespace Ploeh.Samples.BookingApi
         }
 
         private const string readByRangeSql = @"
-            SELECT [Date], [Name], [Email], [Quantity]
+            SELECT [Guid], [Date], [Name], [Email], [Quantity]
             FROM [dbo].[Reservations]
             WHERE YEAR(@MinDate) <= YEAR([Date])
             AND MONTH(@MinDate) <= MONTH([Date])
@@ -65,6 +65,8 @@ namespace Ploeh.Samples.BookingApi
             using (var conn = new SqlConnection(ConnectionString))
             using (var cmd = new SqlCommand(createReservationSql, conn))
             {
+                cmd.Parameters.Add(
+                    new SqlParameter("@Guid", reservation.Id));
                 cmd.Parameters.Add(
                     new SqlParameter("@Date", reservation.Date));
                 cmd.Parameters.Add(
@@ -80,8 +82,8 @@ namespace Ploeh.Samples.BookingApi
         }
 
         private const string createReservationSql = @"
-            INSERT INTO [dbo].[Reservations] ([Date], [Name], [Email], [Quantity])
+            INSERT INTO [dbo].[Reservations] ([Guid], [Date], [Name], [Email], [Quantity])
             OUTPUT INSERTED.Id
-            VALUES (@Date, @Name, @Email, @Quantity)";
+            VALUES (@Guid, @Date, @Name, @Email, @Quantity)";
     }
 }
