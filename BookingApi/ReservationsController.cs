@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,12 @@ namespace Ploeh.Samples.BookingApi
                 return BadRequest(validationMsg);
 
             var reservation = Mapper.Map(dto);
-            return Ok(MaîtreD.TryAccept(reservation));
+            var id = MaîtreD.TryAccept(reservation);
+            if (id == null)
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    "Couldn't accept.");
+            return Ok(id.Value);
         }
     }
 }
