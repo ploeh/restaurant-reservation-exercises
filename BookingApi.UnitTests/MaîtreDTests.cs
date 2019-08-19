@@ -20,12 +20,13 @@ namespace Ploeh.Samples.BookingApi.UnitTests
             td
                 .Setup(r => r.ReadReservations(reservation.Date))
                 .Returns(new Reservation[0]);
-            td.Setup(r => r.Create(reservation)).Returns(42);
+            td.Setup(r => r.ReadReservationId(reservation.Id)).Returns(42);
             var sut = new MaîtreD(capacity: 10, td.Object);
 
             var actual = sut.TryAccept(reservation);
 
             Assert.Equal(42, actual);
+            td.Verify(r => r.Create(reservation));
         }
 
         [Fact]

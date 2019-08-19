@@ -24,7 +24,8 @@ namespace Ploeh.Samples.BookingApi
             if (Capacity < reservedSeats + reservation.Quantity)
                 return null;
 
-            return Repository.Create(reservation);
+            Repository.Create(reservation);
+            return Repository.ReadReservationId(reservation.Id);
         }
     }
 }
