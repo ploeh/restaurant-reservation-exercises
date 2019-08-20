@@ -9,7 +9,7 @@ namespace Ploeh.Samples.BookingApi.UnitTests
     public class MaîtreDTests
     {
         [Fact]
-        public void TryAcceptReturnsReservationIdInHappyPathScenario()
+        public void TryAcceptCreatesReservationIdInHappyPathScenario()
         {
             var reservation = new Reservation
             {
@@ -20,12 +20,10 @@ namespace Ploeh.Samples.BookingApi.UnitTests
             td
                 .Setup(r => r.ReadReservations(reservation.Date))
                 .Returns(new Reservation[0]);
-            td.Setup(r => r.ReadReservationId(reservation.Id)).Returns(42);
             var sut = new MaîtreD(capacity: 10, td.Object);
 
-            var actual = sut.TryAccept(reservation);
+            sut.TryAccept(reservation);
 
-            Assert.Equal(42, actual);
             td.Verify(r => r.Create(reservation));
         }
 
@@ -43,9 +41,9 @@ namespace Ploeh.Samples.BookingApi.UnitTests
                 .Returns(new[] { new Reservation { Quantity = 7 } });
             var sut = new MaîtreD(capacity: 10, td.Object);
 
-            var actual = sut.TryAccept(reservation);
+            Assert.Throws<InvalidOperationException>(() =>
+                sut.TryAccept(reservation));
 
-            Assert.Null(actual);
             td.Verify(r => r.Create(It.IsAny<Reservation>()), Times.Never);
         }
     }

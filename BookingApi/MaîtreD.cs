@@ -16,16 +16,15 @@ namespace Ploeh.Samples.BookingApi
         public int Capacity { get; }
         public IReservationsRepository Repository { get; }
 
-        public int? TryAccept(Reservation reservation)
+        public void TryAccept(Reservation reservation)
         {
             var reservations = Repository.ReadReservations(reservation.Date);
             var reservedSeats = reservations.Sum(r => r.Quantity);
 
             if (Capacity < reservedSeats + reservation.Quantity)
-                return null;
+                throw new InvalidOperationException("Insufficient capacity.");
 
             Repository.Create(reservation);
-            return Repository.ReadReservationId(reservation.Id);
         }
     }
 }
