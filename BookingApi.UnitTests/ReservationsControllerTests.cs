@@ -15,7 +15,6 @@ namespace Ploeh.Samples.BookingApi.UnitTests
         {
             var dto = new ReservationDto { };
             var validatorTD = new Mock<IValidator>();
-            validatorTD.Setup(v => v.Validate(dto)).Returns("Boo!");
             var sut = new ReservationsController(
                 validatorTD.Object,
                 new Mock<IMapper>().Object,
@@ -25,16 +24,16 @@ namespace Ploeh.Samples.BookingApi.UnitTests
             var actual = sut.Post(dto);
 
             var br = Assert.IsAssignableFrom<BadRequestObjectResult>(actual);
-            Assert.Equal("Boo!", br.Value);
+            var msg = Assert.IsAssignableFrom<string>(br.Value);
+            Assert.NotEmpty(msg);
         }
 
         [Fact]
         public void PostValidDtoWhenNoPriorReservationsExist()
         {
-            var dto = new ReservationDto { };
+            var dto = new ReservationDto { Date = "2019-08-20" };
             var r = new Reservation { };
             var validatorTD = new Mock<IValidator>();
-            validatorTD.Setup(v => v.Validate(dto)).Returns("");
             var mapperTD = new Mock<IMapper>();
             mapperTD.Setup(m => m.Map(dto)).Returns(r);
             var repositoryTD = new Mock<IReservationsRepository>();
@@ -54,10 +53,9 @@ namespace Ploeh.Samples.BookingApi.UnitTests
         [Fact]
         public void PostValidDtoWhenSoldOut()
         {
-            var dto = new ReservationDto { };
+            var dto = new ReservationDto { Date = "2019-08-20" };
             var r = new Reservation { Quantity = 2 };
             var validatorTD = new Mock<IValidator>();
-            validatorTD.Setup(v => v.Validate(dto)).Returns("");
             var mapperTD = new Mock<IMapper>();
             mapperTD.Setup(m => m.Map(dto)).Returns(r);
             var sut = new ReservationsController(
