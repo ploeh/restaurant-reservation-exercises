@@ -28,7 +28,8 @@ namespace Ploeh.Samples.BookingApi
                     new Validator(),
                     new Mapper(),
                     new MaîtreD(Capacity),
-                    new SqlReservationsRepository(ConnectionString));
+                    new SqlReservationsRepository(ConnectionString),
+                    Capacity);
 
             throw new InvalidOperationException(
                 $"Unknown controller type: {controllerType}.");
