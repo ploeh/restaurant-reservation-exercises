@@ -10,6 +10,8 @@ namespace Ploeh.Samples.BookingApi
     [ApiController, Route("[controller]")]
     public class ReservationsController : ControllerBase
     {
+        private readonly MaîtreD maîtreD;
+
         public ReservationsController(
             IValidator validator,
             IMapper mapper,
@@ -20,6 +22,7 @@ namespace Ploeh.Samples.BookingApi
             Mapper = mapper;
             Repository = repository;
             Capacity = capacity;
+            maîtreD = new MaîtreD(Capacity);
         }
 
         public IValidator Validator { get; }
@@ -36,7 +39,6 @@ namespace Ploeh.Samples.BookingApi
             var reservation = Mapper.Map(dto);
             var reservations = Repository.ReadReservations(reservation.Date);
 
-            var maîtreD = new MaîtreD(Capacity);
             var accepted = maîtreD.CanAccept(reservations, reservation);
             if (!accepted)
                 return StatusCode(
