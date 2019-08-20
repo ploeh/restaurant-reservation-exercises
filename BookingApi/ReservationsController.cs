@@ -13,16 +13,19 @@ namespace Ploeh.Samples.BookingApi
         public ReservationsController(
             IValidator validator,
             IMapper mapper,
-            IMaîtreD maîtreD)
+            IMaîtreD maîtreD,
+            IReservationsRepository repository)
         {
             Validator = validator;
             Mapper = mapper;
             MaîtreD = maîtreD;
+            Repository = repository;
         }
 
         public IValidator Validator { get; }
         public IMapper Mapper { get; }
         public IMaîtreD MaîtreD { get; }
+        public IReservationsRepository Repository { get; }
 
         public ActionResult Post(ReservationDto dto)
         {
@@ -31,7 +34,8 @@ namespace Ploeh.Samples.BookingApi
                 return BadRequest(validationMsg);
 
             var reservation = Mapper.Map(dto);
-            var id = MaîtreD.TryAccept(reservation);
+            var reservations = Repository.ReadReservations(reservation.Date);
+            var id = MaîtreD.TryAccept(reservations, reservation);
             if (id == null)
                 return StatusCode(
                     StatusCodes.Status500InternalServerError,
