@@ -8,24 +8,26 @@ namespace Ploeh.Samples.BookingApi.UnitTests
 {
     public class MaîtreDTests
     {
-        private class HappyPath : TheoryData<Reservation, int>
+        private class HappyPath : TheoryData<IEnumerable<Reservation>, Reservation, int>
         {
             public HappyPath()
             {
-                Add(new Reservation { Date = new DateTime(2018,  8, 30), Quantity =  4 }, 10);
-                Add(new Reservation { Date = new DateTime(2019,  9, 29), Quantity = 10 }, 10);
-                Add(new Reservation { Date = new DateTime(2020, 10, 28), Quantity = 20 }, 20);
-                Add(new Reservation { Date = new DateTime(2021, 11, 27), Quantity =  1 }, 22);
+                Add(new Reservation[0], new Reservation { Date = new DateTime(2018,  8, 30), Quantity =  4 }, 10);
+                Add(new Reservation[0], new Reservation { Date = new DateTime(2019,  9, 29), Quantity = 10 }, 10);
+                Add(new Reservation[0], new Reservation { Date = new DateTime(2020, 10, 28), Quantity = 20 }, 20);
+                Add(new Reservation[0], new Reservation { Date = new DateTime(2021, 11, 27), Quantity =  1 }, 22);
+                Add(new[] { new Reservation { Quantity = 2 } }, new Reservation { Quantity = 1 }, 3);
             }
         }
 
         [Theory, ClassData(typeof(HappyPath))]
         public void CanAcceptReturnsReservationInHappyPathScenario(
+            IEnumerable<Reservation> reservations,
             Reservation reservation,
             int capacity)
         {
             var sut = new MaîtreD(capacity);
-            var actual = sut.CanAccept(new Reservation[0], reservation);
+            var actual = sut.CanAccept(reservations, reservation);
             Assert.True(actual);
         }
 
