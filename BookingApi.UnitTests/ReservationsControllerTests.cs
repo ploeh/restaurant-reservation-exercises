@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FsCheck.Xunit;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,7 @@ namespace Ploeh.Samples.BookingApi.UnitTests
 {
     public class ReservationsControllerTests
     {
-        [Theory]
-        [InlineData(10)]
-        [InlineData( 1)]
-        [InlineData(99)]
+        [Property]
         public void PostInvalidDto(int capacity)
         {
             var sut = new ReservationsController(
