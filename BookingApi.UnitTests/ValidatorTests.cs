@@ -1,4 +1,5 @@
-﻿using FsCheck.Xunit;
+﻿using FsCheck;
+using FsCheck.Xunit;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,20 +22,21 @@ namespace Ploeh.Samples.BookingApi.UnitTests
             Assert.Empty(actual);
         }
 
-        [Theory]
-        [InlineData("Invalid date")]
-        [InlineData("foo")]
-        [InlineData("  ")]
-        public void InvalidDate(string date)
+        [Property]
+        public Property InvalidDate(string date)
         {
-            var dto = new ReservationDto
+            Action prop = () =>
             {
-                Date = date
+                var dto = new ReservationDto
+                {
+                    Date = date
+                };
+
+                var actual = Validator.Validate(dto);
+
+                Assert.NotEmpty(actual);
             };
-
-            var actual = Validator.Validate(dto);
-
-            Assert.NotEmpty(actual);
+            return prop.When(!DateTime.TryParse(date, out _));
         }
     }
 }
