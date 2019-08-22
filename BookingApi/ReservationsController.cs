@@ -16,6 +16,11 @@ namespace Ploeh.Samples.BookingApi
             IReservationsRepository repository,
             int capacity)
         {
+            if (capacity <= 0)
+                throw new ArgumentOutOfRangeException(
+                    nameof(capacity),
+                    "Capacity must be a positive number.");
+
             Repository = repository;
             Capacity = capacity;
             maîtreD = new MaîtreD(Capacity);
