@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FsCheck.Xunit;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
@@ -7,15 +8,12 @@ namespace Ploeh.Samples.BookingApi.UnitTests
 {
     public class ValidatorTests
     {
-        [Theory]
-        [InlineData("2018-08-30")]
-        [InlineData("2018-08-30T19:47:00")]
-        [InlineData("2022-04-01 12:01:02")]
-        public void ValidDate(string date)
+        [Property]
+        public void ValidDate(DateTime date)
         {
             var dto = new ReservationDto
             {
-                Date = date
+                Date = date.ToString()
             };
 
             var actual = Validator.Validate(dto);
