@@ -8,19 +8,14 @@ namespace Ploeh.Samples.BookingApi.UnitTests
 {
     public class MaîtreDTests
     {
-        private class HappyPath : IEnumerable<object[]>
+        private class HappyPath : TheoryData<DateTime, int, int>
         {
-            public IEnumerator<object[]> GetEnumerator()
+            public HappyPath()
             {
-                yield return new object[] { new DateTime(2018,  8, 30),  4, 10 };
-                yield return new object[] { new DateTime(2019,  9, 29), 10, 10 };
-                yield return new object[] { new DateTime(2020, 10, 28), 20, 20 };
-                yield return new object[] { new DateTime(2021, 11, 27),  1, 22 };
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return this.GetEnumerator();
+                Add(new DateTime(2018,  8, 30),  4, 10);
+                Add(new DateTime(2019,  9, 29), 10, 10);
+                Add(new DateTime(2020, 10, 28), 20, 20);
+                Add(new DateTime(2021, 11, 27),  1, 22);
             }
         }
 
