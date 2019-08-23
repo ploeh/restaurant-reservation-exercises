@@ -3,6 +3,7 @@ using FsCheck.Xunit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Xunit;
 
@@ -40,19 +41,18 @@ namespace Ploeh.Samples.BookingApi.UnitTests
                 from  r in GenerateReservation
                 from eq in Arb.Default.PositiveInt().Generator
                 from cs in Arb.Default.NonNegativeInt().Generator
-                from rs in Arb.Default.NonNegativeInt().Generator
-                select (r, eq.Item, cs.Item, rs.Item)).ToArbitrary(),
+                from rs in GenerateReservation.ListOf()
+                select (r, eq.Item, cs.Item, rs)).ToArbitrary(),
                 x =>
                 {
-                    var (reservation, excessQuantity, capacitySurplus, reservedSeats) = x;
+                    var (reservation, excessQuantity, capacitySurplus, reservations) = x;
+                    var reservedSeats = reservations.Sum(r => r.Quantity);
                     var quantity = capacitySurplus + excessQuantity;
                     var capacity = capacitySurplus + reservedSeats;
                     reservation.Quantity = quantity;
                     var sut = new MaîtreD(capacity);
 
-                    var actual = sut.CanAccept(
-                        new[] { new Reservation { Quantity = reservedSeats } },
-                        reservation);
+                    var actual = sut.CanAccept(reservations, reservation);
 
                     Assert.False(actual);
                 });
