@@ -60,7 +60,15 @@ namespace Ploeh.Samples.BookingApi.UnitTests
 
         private static Gen<Reservation> GenerateReservation =>
             from d in Arb.Default.DateTime().Generator
+            from e in Arb.Default.NonWhiteSpaceString().Generator
+            from n in Arb.Default.NonWhiteSpaceString().Generator
             from q in Arb.Default.PositiveInt().Generator
-            select new Reservation { Date = d, Quantity = q.Item };
+            select new Reservation
+            {
+                Date = d,
+                Email = e.Item,
+                Name = n.Item,
+                Quantity = q.Item
+            };
     }
 }
