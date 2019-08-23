@@ -32,14 +32,15 @@ namespace Ploeh.Samples.BookingApi.UnitTests
         }
 
         [Theory]
-        [InlineData( 4, 10, 7)]
-        [InlineData( 4,  6, 4)]
-        [InlineData(11, 14, 5)]
+        [InlineData( 4, 3, 7)]
+        [InlineData( 4, 2, 4)]
+        [InlineData(11, 9, 5)]
         public void CanAcceptOnInsufficientCapacity(
             int quantity,
-            int capacity,
+            int capacitySurplus,
             int reservedSeats)
         {
+            var capacity = capacitySurplus + reservedSeats;
             var reservation = new Reservation
             {
                 Date = new DateTime(2018, 8, 30),
