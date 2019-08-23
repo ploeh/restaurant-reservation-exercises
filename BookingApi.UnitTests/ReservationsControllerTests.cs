@@ -46,15 +46,14 @@ namespace Ploeh.Samples.BookingApi.UnitTests
             Assert.NotEmpty(repository);
         }
 
-        [Theory]
-        [InlineData( 1, 1)]
-        [InlineData( 1, 2)]
-        [InlineData(11, 4)]
-        public void PostValidDtoWhenSoldOut(int capacity, int excessQuantity)
+        [Property]
+        public void PostValidDtoWhenSoldOut(
+            PositiveInt capacity,
+            PositiveInt excessQuantity)
         {
             var repository = new FakeReservationsRepository();
-            var quantity = capacity + excessQuantity;
-            var sut = new ReservationsController(repository, capacity);
+            var quantity = capacity.Item + excessQuantity.Item;
+            var sut = new ReservationsController(repository, capacity.Item);
 
             var dto = new ReservationDto
             {
