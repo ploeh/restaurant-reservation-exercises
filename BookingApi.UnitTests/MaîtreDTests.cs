@@ -37,21 +37,17 @@ namespace Ploeh.Samples.BookingApi.UnitTests
         public Property CanAcceptOnInsufficientCapacity()
         {
             return Prop.ForAll((
-                from rd in Arb.Default.DateTime().Generator
+                from  r in GenerateReservation
                 from eq in Arb.Default.PositiveInt().Generator
                 from cs in Arb.Default.NonNegativeInt().Generator
                 from rs in Arb.Default.NonNegativeInt().Generator
-                select (rd, eq.Item, cs.Item, rs.Item)).ToArbitrary(),
+                select (r, eq.Item, cs.Item, rs.Item)).ToArbitrary(),
                 x =>
                 {
-                    var (date, excessQuantity, capacitySurplus, reservedSeats) = x;
+                    var (reservation, excessQuantity, capacitySurplus, reservedSeats) = x;
                     var quantity = capacitySurplus + excessQuantity;
                     var capacity = capacitySurplus + reservedSeats;
-                    var reservation = new Reservation
-                    {
-                        Date = date,
-                        Quantity = quantity
-                    };
+                    reservation.Quantity = quantity;
                     var sut = new MaîtreD(capacity);
 
                     var actual = sut.CanAccept(
@@ -61,5 +57,10 @@ namespace Ploeh.Samples.BookingApi.UnitTests
                     Assert.False(actual);
                 });
         }
+
+        private static Gen<Reservation> GenerateReservation =>
+            from d in Arb.Default.DateTime().Generator
+            from q in Arb.Default.PositiveInt().Generator
+            select new Reservation { Date = d, Quantity = q.Item };
     }
 }
