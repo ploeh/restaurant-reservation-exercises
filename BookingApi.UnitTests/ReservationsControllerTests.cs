@@ -27,14 +27,15 @@ namespace Ploeh.Samples.BookingApi.UnitTests
         }
 
         [Theory]
-        [InlineData(10, 1)]
-        [InlineData( 9, 9)]
-        [InlineData(30, 4)]
+        [InlineData( 9, 1)]
+        [InlineData( 0, 9)]
+        [InlineData(26, 4)]
         public void PostValidDtoWhenNoPriorReservationsExist(
-            int capacity,
+            int capacitySurplus,
             int quantity)
         {
             var repository = new FakeReservationsRepository();
+            var capacity = capacitySurplus + quantity;
             var sut = new ReservationsController(repository, capacity);
 
             var dto = new ReservationDto
