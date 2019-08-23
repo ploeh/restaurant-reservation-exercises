@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FsCheck;
+using FsCheck.Xunit;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -31,19 +33,14 @@ namespace Ploeh.Samples.BookingApi.UnitTests
             Assert.True(actual);
         }
 
-        [Theory]
-        [InlineData(4, 3, 7)]
-        [InlineData(2, 2, 4)]
-        [InlineData(2, 9, 5)]
-        [InlineData(1, 1, 0)]
-        [InlineData(1, 0, 8)]
+        [Property]
         public void CanAcceptOnInsufficientCapacity(
-            int excessQuantity,
-            int capacitySurplus,
-            int reservedSeats)
+            PositiveInt excessQuantity,
+            NonNegativeInt capacitySurplus,
+            NonNegativeInt reservedSeats)
         {
-            var quantity = capacitySurplus + excessQuantity;
-            var capacity = capacitySurplus + reservedSeats;
+            var quantity = capacitySurplus.Item + excessQuantity.Item;
+            var capacity = capacitySurplus.Item + reservedSeats.Item;
             var reservation = new Reservation
             {
                 Date = new DateTime(2018, 8, 30),
@@ -52,7 +49,7 @@ namespace Ploeh.Samples.BookingApi.UnitTests
             var sut = new MaîtreD(capacity);
 
             var actual = sut.CanAccept(
-                new[] { new Reservation { Quantity = reservedSeats } },
+                new[] { new Reservation { Quantity = reservedSeats.Item } },
                 reservation);
 
             Assert.False(actual);
