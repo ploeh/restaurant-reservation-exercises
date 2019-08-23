@@ -47,12 +47,13 @@ namespace Ploeh.Samples.BookingApi.UnitTests
         }
 
         [Theory]
-        [InlineData( 1,  2)]
-        [InlineData( 1,  3)]
-        [InlineData(11, 15)]
-        public void PostValidDtoWhenSoldOut(int capacity, int quantity)
+        [InlineData( 1, 1)]
+        [InlineData( 1, 2)]
+        [InlineData(11, 4)]
+        public void PostValidDtoWhenSoldOut(int capacity, int excessQuantity)
         {
             var repository = new FakeReservationsRepository();
+            var quantity = capacity + excessQuantity;
             var sut = new ReservationsController(repository, capacity);
 
             var dto = new ReservationDto
