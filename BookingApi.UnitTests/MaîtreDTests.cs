@@ -35,6 +35,7 @@ namespace Ploeh.Samples.BookingApi.UnitTests
 
         [Property]
         public void CanAcceptOnInsufficientCapacity(
+            DateTime date,
             PositiveInt excessQuantity,
             NonNegativeInt capacitySurplus,
             NonNegativeInt reservedSeats)
@@ -43,7 +44,7 @@ namespace Ploeh.Samples.BookingApi.UnitTests
             var capacity = capacitySurplus.Item + reservedSeats.Item;
             var reservation = new Reservation
             {
-                Date = new DateTime(2018, 8, 30),
+                Date = date,
                 Quantity = quantity
             };
             var sut = new MaîtreD(capacity);
