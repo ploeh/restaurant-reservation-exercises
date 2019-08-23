@@ -33,8 +33,8 @@ namespace Ploeh.Samples.BookingApi.UnitTests
 
         [Theory]
         [InlineData( 4, 10, 7)]
-        [InlineData( 3,  3, 7)]
-        [InlineData(11, 14, 7)]
+        [InlineData( 4,  6, 4)]
+        [InlineData(11, 14, 5)]
         public void CanAcceptOnInsufficientCapacity(
             int quantity,
             int capacity,
