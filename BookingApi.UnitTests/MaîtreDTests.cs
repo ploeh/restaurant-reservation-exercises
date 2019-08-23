@@ -32,10 +32,13 @@ namespace Ploeh.Samples.BookingApi.UnitTests
         }
 
         [Theory]
-        [InlineData(4, 10)]
-        [InlineData(3, 3)]
-        [InlineData(11, 14)]
-        public void CanAcceptOnInsufficientCapacity(int quantity, int capacity)
+        [InlineData( 4, 10, 7)]
+        [InlineData( 3,  3, 7)]
+        [InlineData(11, 14, 7)]
+        public void CanAcceptOnInsufficientCapacity(
+            int quantity,
+            int capacity,
+            int reservedSeats)
         {
             var reservation = new Reservation
             {
@@ -45,7 +48,7 @@ namespace Ploeh.Samples.BookingApi.UnitTests
             var sut = new MaîtreD(capacity);
 
             var actual = sut.CanAccept(
-                new[] { new Reservation { Quantity = 7 } },
+                new[] { new Reservation { Quantity = reservedSeats } },
                 reservation);
 
             Assert.False(actual);
