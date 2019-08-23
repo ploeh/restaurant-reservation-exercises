@@ -26,22 +26,19 @@ namespace Ploeh.Samples.BookingApi.UnitTests
             Assert.NotEmpty(msg);
         }
 
-        [Theory]
-        [InlineData( 9, 1)]
-        [InlineData( 0, 9)]
-        [InlineData(26, 4)]
+        [Property]
         public void PostValidDtoWhenNoPriorReservationsExist(
-            int capacitySurplus,
-            int quantity)
+            NonNegativeInt capacitySurplus,
+            PositiveInt quantity)
         {
             var repository = new FakeReservationsRepository();
-            var capacity = capacitySurplus + quantity;
+            var capacity = capacitySurplus.Item + quantity.Item;
             var sut = new ReservationsController(repository, capacity);
 
             var dto = new ReservationDto
             {
                 Date = "2019-08-20",
-                Quantity = quantity
+                Quantity = quantity.Item
             };
             var actual = sut.Post(dto);
 
