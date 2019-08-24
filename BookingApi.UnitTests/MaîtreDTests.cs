@@ -15,11 +15,11 @@ namespace Ploeh.Samples.BookingApi.UnitTests
         {
             public HappyPath()
             {
-                Add(new Reservation[0], new Reservation { Date = new DateTime(2018,  8, 30), Quantity =  4 }, 10);
-                Add(new Reservation[0], new Reservation { Date = new DateTime(2019,  9, 29), Quantity = 10 }, 10);
-                Add(new Reservation[0], new Reservation { Date = new DateTime(2020, 10, 28), Quantity = 20 }, 20);
-                Add(new Reservation[0], new Reservation { Date = new DateTime(2021, 11, 27), Quantity =  1 }, 22);
-                Add(new[] { new Reservation { Quantity = 2 } }, new Reservation { Quantity = 1 }, 3);
+                Add(new Reservation[0], new Reservation { Date = new DateTime(2018,  8, 30), Quantity =  4 },  6);
+                Add(new Reservation[0], new Reservation { Date = new DateTime(2019,  9, 29), Quantity = 10 },  0);
+                Add(new Reservation[0], new Reservation { Date = new DateTime(2020, 10, 28), Quantity = 20 },  0);
+                Add(new Reservation[0], new Reservation { Date = new DateTime(2021, 11, 27), Quantity =  1 }, 21);
+                Add(new[] { new Reservation { Quantity = 2 } }, new Reservation { Quantity = 1 }, 0);
             }
         }
 
@@ -27,10 +27,15 @@ namespace Ploeh.Samples.BookingApi.UnitTests
         public void CanAcceptReturnsReservationInHappyPathScenario(
             IEnumerable<Reservation> reservations,
             Reservation reservation,
-            int capacity)
+            int capacitySurplus)
         {
+            var reservedSeats = reservations.Sum(r => r.Quantity);
+            var capacity =
+                reservation.Quantity + reservedSeats + capacitySurplus;
             var sut = new MaîtreD(capacity);
+
             var actual = sut.CanAccept(reservations, reservation);
+
             Assert.True(actual);
         }
 
