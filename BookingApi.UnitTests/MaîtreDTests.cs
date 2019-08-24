@@ -11,32 +11,26 @@ namespace Ploeh.Samples.BookingApi.UnitTests
 {
     public class MaîtreDTests
     {
-        private class HappyPath : TheoryData<IEnumerable<Reservation>, Reservation, int>
+        [Property]
+        public Property CanAcceptReturnsReservationInHappyPathScenario()
         {
-            public HappyPath()
-            {
-                Add(new Reservation[0], new Reservation { Date = new DateTime(2018,  8, 30), Quantity =  4 },  6);
-                Add(new Reservation[0], new Reservation { Date = new DateTime(2019,  9, 29), Quantity = 10 },  0);
-                Add(new Reservation[0], new Reservation { Date = new DateTime(2020, 10, 28), Quantity = 20 },  0);
-                Add(new Reservation[0], new Reservation { Date = new DateTime(2021, 11, 27), Quantity =  1 }, 21);
-                Add(new[] { new Reservation { Quantity = 2 } }, new Reservation { Quantity = 1 }, 0);
-            }
-        }
+            return Prop.ForAll((
+                from rs in GenerateReservation.ListOf()
+                from r in GenerateReservation
+                from cs in Arb.Default.NonNegativeInt().Generator
+                select (rs, r, cs.Item)).ToArbitrary(),
+                x =>
+                {
+                    var (reservations, reservation, capacitySurplus) = x;
+                    var reservedSeats = reservations.Sum(r => r.Quantity);
+                    var capacity =
+                        reservation.Quantity + reservedSeats + capacitySurplus;
+                    var sut = new MaîtreD(capacity);
 
-        [Theory, ClassData(typeof(HappyPath))]
-        public void CanAcceptReturnsReservationInHappyPathScenario(
-            IEnumerable<Reservation> reservations,
-            Reservation reservation,
-            int capacitySurplus)
-        {
-            var reservedSeats = reservations.Sum(r => r.Quantity);
-            var capacity =
-                reservation.Quantity + reservedSeats + capacitySurplus;
-            var sut = new MaîtreD(capacity);
+                    var actual = sut.CanAccept(reservations, reservation);
 
-            var actual = sut.CanAccept(reservations, reservation);
-
-            Assert.True(actual);
+                    Assert.True(actual);
+                });
         }
 
         [Property]
