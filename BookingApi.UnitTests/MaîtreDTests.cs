@@ -11,41 +11,29 @@ namespace Ploeh.Samples.BookingApi.UnitTests
         [Fact]
         public void TryAcceptReturnsReservationIdInHappyPathScenario()
         {
-            var reservation = new Reservation
-            {
-                Date = new DateTime(2018, 8, 30),
-                Quantity = 4
-            };
-            var td = new Mock<IReservationsRepository>();
-            td
-                .Setup(r => r.ReadReservations(reservation.Date))
-                .Returns(new Reservation[0]);
-            td.Setup(r => r.Create(reservation)).Returns(42);
-            var sut = new MaîtreD(capacity: 10, td.Object);
+            // properly initialize `reservation` here:
+            Reservation reservation = null;
+            // properly initialise `sut` here:
+            MaîtreD sut = null;
 
             var actual = sut.TryAccept(reservation);
 
-            Assert.Equal(42, actual);
+            // Uncomment and assign a proper value to `expected`:
+            //Assert.Equal(expected, actual);
         }
 
         [Fact]
         public void TryAcceptOnInsufficientCapacity()
         {
-            var reservation = new Reservation
-            {
-                Date = new DateTime(2018, 8, 30),
-                Quantity = 4
-            };
-            var td = new Mock<IReservationsRepository>();
-            td
-                .Setup(r => r.ReadReservations(reservation.Date))
-                .Returns(new[] { new Reservation { Quantity = 7 } });
-            var sut = new MaîtreD(capacity: 10, td.Object);
+            // properly initialize `reservation` here:
+            Reservation reservation = null;
+            // properly initialise `sut` here:
+            MaîtreD sut = null;
 
             var actual = sut.TryAccept(reservation);
 
             Assert.Null(actual);
-            td.Verify(r => r.Create(It.IsAny<Reservation>()), Times.Never);
+            // Add an assertion that sut.Repository.Create is NOT called here.
         }
     }
 }
