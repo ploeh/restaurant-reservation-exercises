@@ -11,6 +11,7 @@ namespace Ploeh.Samples.BookingApi
         {
             return new Reservation
             {
+                Id = Guid.NewGuid(),
                 Date = DateTime.Parse(dto.Date),
                 Email = dto.Email,
                 Name = dto.Name,
